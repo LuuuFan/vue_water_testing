@@ -1,12 +1,19 @@
 <template>
   <div class="hello">
-    LuuuFan
+    {{name}}
+    <button v-on:click="changeName" v-bind:disabled="btnState">Change Name </button>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Header',
+  data(){
+    return {
+      name: 'Vue Water Testing',
+      btnState: true,
+    }
+  }
 }
 </script>
 
