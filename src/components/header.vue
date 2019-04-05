@@ -3,11 +3,16 @@
     <h3>{{name}}</h3>
     <div class='holder'>
       <form @submit.prevent="addSkill">
-        <input type="text" placeholder="Please input the skill you have" v-model="skill">
+        <input type="text" placeholder="Please input the skill you have" v-model="skill" v-validate="'min:5'" name='skill'>
+        {{skill}}
+        <transition name='alert-in' enter-active-class="animated flipInX" leave-active-class="animated flipOutX">
+          <p class="alert" v-if="errors.has('skill')">{{errors.first('skill')}}</p>
+        </transition>  
       </form>
-      {{skill}}
       <ul>
-        <li v-for="(data, index) in skills" :key='index'>{{data.skill}}</li>
+        <transition-group name='list' enter-active-class="animated bounceInUp" leave-active-class="animated bounceoutDown">
+          <li v-for="(data, index) in skills" :key='index'>{{data.skill}}</li>
+        </transition-group>
       </ul>
       <p>You have {{skills.length > 1 ? "more than 1" : skills.length}} skill{{skills.length >=1 ? 's' : ''}}</p>
       <!-- <div v-bind:class="alertObject"></div> -->
@@ -40,8 +45,14 @@ export default {
   },
   methods: {
     addSkill(){
-      this.skills.push({skill: this.skill});
-      this.skill = '';
+      this.$validator.validateAll().then(result => {
+        if (result) {
+          this.skills.push({skill: this.skill});
+          this.skill = '';
+        } else {
+          console.log('input not valid');
+        }
+      })
     }
   }
 }
@@ -49,15 +60,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+@import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
 h3 {
   margin: 40px 0 0;
 }
 input{
   box-sizing: border-box;
   border: 1px solid lightgray;
-  padding: 5px 0;
-  text-indent: 15px;
-  width:100%;
+  padding: 20px 0;
+  width: 100%;
+  text-indent: 20px;
   margin-bottom: 5px;
   outline: none;
 }
@@ -69,7 +81,7 @@ ul {
 }
 li {
   background-color: lightblue;
-  border-left: 2px solid #42b983;
+  border-left: 5px solid #2c3e50;
   text-align: left;
   margin-bottom: 2px;
   padding: 5px;
@@ -83,12 +95,33 @@ a {
   color: #42b983;
 }
 .alert{
-  background-color: red;
-  width: 50%;
-  margin: 0 auto;
-  height: 30px;
+  background-color: #fdf2ce;
+  margin-top: -20px;
+  padding: 5px;
+  display: inline-block;
+  font-weight: bold;
 }
 .border{
   border: 2px solid black;
+}
+
+.alert-in-enter-active{
+  animation: bounce-in .5s;
+}
+
+.alert-in-leave-active{
+  animation: bounce-in .5s reverse;
+}
+
+@keyframes boundce-in {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
