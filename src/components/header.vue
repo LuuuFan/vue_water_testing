@@ -11,7 +11,10 @@
       </form>
       <ul>
         <transition-group name='list' enter-active-class="animated bounceInUp" leave-active-class="animated bounceoutDown">
-          <li v-for="(data, index) in skills" :key='index'>{{data.skill}}</li>
+          <li v-for="(data, index) in skills" :key='index'>
+            {{data.skill}}
+            <i class="fa fa-minus-circle" v-on:click="remove(index)"></i>
+          </li>
         </transition-group>
       </ul>
       <p>You have {{skills.length > 1 ? "more than 1" : skills.length}} skill{{skills.length >=1 ? 's' : ''}}</p>
@@ -53,6 +56,9 @@ export default {
           console.log('input not valid');
         }
       })
+    },
+    remove(id){
+      this.skills.splice(id, 1);
     }
   }
 }
@@ -61,6 +67,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 @import "https://cdn.jsdelivr.net/npm/animate.css@3.5.1";
+@import "https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css";
 h3 {
   margin: 40px 0 0;
 }
@@ -86,6 +93,9 @@ li {
   margin-bottom: 2px;
   padding: 5px;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 li:hover{
   transform: translateY(1px);
